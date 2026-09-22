@@ -1,0 +1,31 @@
+name: cement_accounting_complete
+description: نظام محاسبي متكامل لتجارة وتوزيع الأسمنت - مؤسسة الغولي - V3
+publish_to: none
+version: 3.0.0+3
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  path_provider: ^2.1.4
+  intl: ^0.19.0
+  shared_preferences: ^2.2.3
+  pdf: ^3.11.0
+  printing: ^5.13.4
+  http: ^1.2.2
+  crypto: ^3.0.3
+  file_picker: ^8.0.7
+  url_launcher: ^6.3.0
+  qr_flutter: ^4.1.0
+  share_plus: ^10.0.2
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.2
+  sqflite_common_ffi: ^2.3.4
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/branding/

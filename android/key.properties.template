@@ -1,0 +1,11 @@
+# انسخ هذا الملف إلى android/key.properties (بدون .template) واملأ القيم الحقيقية
+# لا تضف android/key.properties أو ملف الـ keystore (*.jks) إلى Git إطلاقًا.
+#
+# لإنشاء keystore جديد:
+#   keytool -genkey -v -keystore alghouli-release.jks -keyalg RSA -keysize 2048 \
+#     -validity 10000 -alias alghouli_cement
+#
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=alghouli_cement
+storeFile=/absolute/path/to/alghouli-release.jks
