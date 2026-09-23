@@ -35,6 +35,27 @@
 | ربط API حقيقي لواتساب/SMS | ⏳ نقطة توسعة جاهزة في الكود (`ApiMessageProvider`) بلا اعتماد فعلي |
 | مطابقة Google Play (لقطات شاشة فعلية، سياسة خصوصية، وصف متجر) | ⏳ لم تُنفَّذ |
 
+<<<<<<< HEAD
+=======
+## سجل تصحيحات ما بعد أول flutter analyze حقيقي
+
+أول تشغيل فعلي لـ `flutter analyze` على GitHub Actions (بعد رفع المشروع)
+كشف عن 56 ملاحظة، منها 15 خطأ فعلي أوقف البناء. تم إصلاحها جميعًا:
+- تعارض تسمية `Action` مع `Action` الخاصة بـ Flutter Material → أُعيدت تسمية
+  Enum الصلاحيات إلى `PermAction` في كل الملفات.
+- تعارض تسمية `ArabicFontLoader` (كلاس مقابل typedef غير مستخدم) → أُعيد
+  تسمية الـ typedef غير المستخدم في `pdf_templates.dart`.
+- استخدام `const` خاطئ على قوائم تحتوي عناصر غير ثابتة في `pdf_templates.dart`.
+- استيرادات غير مستخدمة (`audit.dart`, `db.dart`, `dart:convert`,
+  `sqflite.dart`) في عدة ملفات.
+- كود ميت (`return false && opened`) في `message_service.dart`.
+
+الملاحظات المتبقية (info/warning فقط، لا توقف البناء): استخدام `withOpacity`
+و`value:` في DropdownButtonFormField المهجورين لصالح بدائل أحدث، واستخدام
+BuildContext عبر async gaps دون فحص `mounted` صريح في بعض الشاشات — هذه
+تحسينات جودة كود يُنصح بمعالجتها تدريجيًا، لا أخطاء توقف البناء.
+
+>>>>>>> 6bcf499 (إصلاح أخطاء flutter analyze: تعارض Action وArabicFontLoader وconst)
 ## خطوة إلزامية قبل أول بناء: إضافة خط عربي لـ PDF
 
 حزمة `pdf` تحتاج ملف خط TTF عربي حتى تُكتب الحروف متصلة بشكل صحيح. نزّل خطًا

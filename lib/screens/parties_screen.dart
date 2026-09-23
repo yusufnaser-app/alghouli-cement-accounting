@@ -84,7 +84,7 @@ class _PartyListScreenState extends State<PartyListScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       floatingActionButton: FutureBuilder<bool>(
-        future: Permissions.can('parties', Action.add),
+        future: Permissions.can('parties', PermAction.add),
         builder: (c, s) =>
             (s.data ?? false) ? FloatingActionButton(onPressed: _add, child: const Icon(Icons.add)) : const SizedBox.shrink(),
       ),

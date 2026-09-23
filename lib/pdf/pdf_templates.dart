@@ -18,7 +18,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:intl/intl.dart';
 
-typedef ArabicFontLoader = Future<pw.Font> Function();
+typedef ArabicFontLoaderFn = Future<pw.Font> Function();
 
 class DocHeaderInfo {
   final String companyName;
@@ -172,11 +172,11 @@ class PdfTemplates {
           if (h.stampBytes != null) pw.Image(pw.MemoryImage(h.stampBytes!), width: 80, height: 80),
           pw.Text('الختم', style: const pw.TextStyle(fontSize: 9)),
         ]),
-        pw.Column(children: const [
+        pw.Column(children: [
           pw.SizedBox(height: 50, width: 140),
           pw.Text('توقيع المستلم', style: pw.TextStyle(fontSize: 9)),
         ]),
-        pw.Column(children: const [
+        pw.Column(children: [
           pw.SizedBox(height: 50, width: 140),
           pw.Text('توقيع المحاسب', style: pw.TextStyle(fontSize: 9)),
         ]),

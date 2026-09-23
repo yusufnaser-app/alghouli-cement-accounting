@@ -8,7 +8,7 @@
 
 import 'db.dart';
 
-enum Action { view, add, edit, post, cancel, reverse, print, export, send, settings }
+enum PermAction { view, add, edit, post, cancel, reverse, print, export, send, settings }
 
 class PermissionDeniedException implements Exception {
   final String message;
@@ -64,7 +64,7 @@ class Permissions {
   /// يتحقق من صلاحية الدور الحالي لتنفيذ [action] على [module].
   /// يرمي [PermissionDeniedException] عند الرفض. يجب استدعاؤه في بداية أي
   /// عملية حساسة في طبقة الخدمات (accounting/operations) وليس فقط في الواجهة.
-  static Future<void> require(String module, Action action) async {
+  static Future<void> require(String module, PermAction action) async {
     final user = Session.instance.user;
     if (user == null) {
       throw PermissionDeniedException('يجب تسجيل الدخول أولًا');
@@ -85,7 +85,7 @@ class Permissions {
 
   /// نسخة غير مُلزمة تُستخدم فقط للتحكم في إظهار/إخفاء عناصر الواجهة.
   /// لا تُستخدم أبدًا كبديل عن [require] قبل الكتابة الفعلية للبيانات.
-  static Future<bool> can(String module, Action action) async {
+  static Future<bool> can(String module, PermAction action) async {
     try {
       await require(module, action);
       return true;
@@ -94,16 +94,16 @@ class Permissions {
     }
   }
 
-  static String _actionLabel(Action a) => switch (a) {
-        Action.view => 'العرض',
-        Action.add => 'الإضافة',
-        Action.edit => 'التعديل',
-        Action.post => 'الترحيل',
-        Action.cancel => 'الإلغاء',
-        Action.reverse => 'العكس المحاسبي',
-        Action.print => 'الطباعة',
-        Action.export => 'التصدير',
-        Action.send => 'الإرسال',
-        Action.settings => 'الإعدادات',
+  static String _actionLabel(PermAction a) => switch (a) {
+        PermAction.view => 'العرض',
+        PermAction.add => 'الإضافة',
+        PermAction.edit => 'التعديل',
+        PermAction.post => 'الترحيل',
+        PermAction.cancel => 'الإلغاء',
+        PermAction.reverse => 'العكس المحاسبي',
+        PermAction.print => 'الطباعة',
+        PermAction.export => 'التصدير',
+        PermAction.send => 'الإرسال',
+        PermAction.settings => 'الإعدادات',
       };
 }

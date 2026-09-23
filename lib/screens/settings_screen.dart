@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _saveAll() async {
-    await Permissions.require('settings', Action.settings);
+    await Permissions.require('settings', PermAction.settings);
     for (final k in _keys) {
       final v = _controllers[k]!.text;
       final exists = await AppDb.instance.q('SELECT id FROM settings WHERE key=?', [k]);

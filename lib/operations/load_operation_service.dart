@@ -18,7 +18,6 @@
 //   - الصلاحيات تُفرض قبل أي كتابة عبر [Permissions.require].
 // ============================================================================
 
-import 'package:sqflite/sqflite.dart';
 import '../core/db.dart';
 import '../core/permissions.dart';
 import '../core/audit.dart';
@@ -92,7 +91,7 @@ class LoadInput {
 class LoadOperationService {
   /// المرحلة 1: تسجيل الحمولة كمسودة (draft) — لا تُنشأ أي حركات محاسبية بعد.
   static Future<int> registerDraft(LoadInput input, {required int createdBy}) async {
-    await Permissions.require('loads', Action.add);
+    await Permissions.require('loads', PermAction.add);
     final db = AppDb.instance.db;
     final now = DateTime.now().toIso8601String();
     final opNo = await _nextOperationNo();
@@ -142,7 +141,7 @@ class LoadOperationService {
   /// المرحلة 2: "ترحيل الحمولة" — العملية الجوهرية. تُنفَّذ داخل معاملة واحدة
   /// ذرّية (atomic transaction): إما تنجح كل الحركات معًا أو تفشل كلها معًا.
   static Future<void> postLoad(int loadId, {required int postedBy}) async {
-    await Permissions.require('loads', Action.post);
+    await Permissions.require('loads', PermAction.post);
     final db = AppDb.instance.db;
 
     await db.transaction((tx) async {
@@ -308,7 +307,7 @@ class LoadOperationService {
   /// مرتبطًا بالقيد الأصلي، ويعيد حالة الحمولة إلى 'reversed'، مع تصحيح
   /// المخزون بعملية إخراج مقابلة.
   static Future<void> reversePostedLoad(int loadId, {required int userId, required String reason}) async {
-    await Permissions.require('loads', Action.reverse);
+    await Permissions.require('loads', PermAction.reverse);
     final db = AppDb.instance.db;
     await db.transaction((tx) async {
       final rows = await tx.query('loads', where: 'id=?', whereArgs: [loadId]);
@@ -358,7 +357,7 @@ class LoadOperationService {
 
   /// إلغاء مسودة قبل الترحيل فقط — لا يمس أي حسابات لأنه لم يُرحّل بعد.
   static Future<void> cancelDraft(int loadId) async {
-    await Permissions.require('loads', Action.cancel);
+    await Permissions.require('loads', PermAction.cancel);
     final rows = await AppDb.instance.q('SELECT status FROM loads WHERE id=?', [loadId]);
     if (rows.isEmpty) throw Exception('العملية غير موجودة');
     if (rows.first['status'] != 'draft') {

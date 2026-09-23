@@ -27,7 +27,7 @@ class ReportsScreen extends StatelessWidget {
   }
 
   Future<void> _exportAndPrint(BuildContext context, Future<pw.Document> Function() build) async {
-    await Permissions.require('reports', Action.print);
+    await Permissions.require('reports', PermAction.print);
     final doc = await build();
     if (PdfFontStatus.usingFallback && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

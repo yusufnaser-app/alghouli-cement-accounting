@@ -48,7 +48,7 @@ class _SalesScreenState extends State<SalesScreen> {
   Future<List<Map<String, Object?>>> _list() => AppDb.instance.q('SELECT * FROM sales ORDER BY id DESC');
 
   Future<void> _addAndPost() async {
-    await Permissions.require('sales', Action.add);
+    await Permissions.require('sales', PermAction.add);
     final customers = await AppDb.instance.q("SELECT id,name,account_id FROM parties WHERE type='customer'");
     final products = await AppDb.instance.q('SELECT id,name,stock_bags,avg_unit_cost FROM products');
     final moneyAccounts = await AppDb.instance.q('SELECT id,name,account_id FROM money_accounts');
@@ -228,7 +228,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Future<List<Map<String, Object?>>> _list() => AppDb.instance.q('SELECT * FROM expenses ORDER BY id DESC');
 
   Future<void> _add() async {
-    await Permissions.require('expenses', Action.add);
+    await Permissions.require('expenses', PermAction.add);
     final moneyAccounts = await AppDb.instance.q('SELECT id,name,account_id FROM money_accounts');
     if (moneyAccounts.isEmpty) return;
     final category = TextEditingController();
@@ -314,7 +314,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
   Future<List<Map<String, Object?>>> _list() => AppDb.instance.q('SELECT * FROM vouchers ORDER BY id DESC');
 
   Future<void> _add() async {
-    await Permissions.require('vouchers', Action.add);
+    await Permissions.require('vouchers', PermAction.add);
     final moneyAccounts = await AppDb.instance.q('SELECT id,name,account_id FROM money_accounts');
     if (moneyAccounts.isEmpty) return;
     String kind = 'receipt';

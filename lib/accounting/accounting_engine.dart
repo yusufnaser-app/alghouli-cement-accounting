@@ -11,7 +11,10 @@
 
 import 'package:sqflite/sqflite.dart';
 import '../core/db.dart';
+<<<<<<< HEAD
 import '../core/audit.dart';
+=======
+>>>>>>> 6bcf499 (إصلاح أخطاء flutter analyze: تعارض Action وArabicFontLoader وconst)
 
 class JournalLineInput {
   /// إما كود حساب من دليل الحسابات الثابت (مثل '1400') أو رقم حساب فرعي

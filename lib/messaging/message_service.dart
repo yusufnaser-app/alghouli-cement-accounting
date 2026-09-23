@@ -11,7 +11,6 @@
 // الجداول أو واجهة الاستدعاء.
 // ============================================================================
 
-import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 import '../core/db.dart';
 
@@ -33,9 +32,12 @@ class ManualOpenProvider implements MessageProvider {
     final uri = whatsapp
         ? Uri.parse('https://wa.me/$cleanPhone?text=${Uri.encodeComponent(message)}')
         : Uri.parse('sms:$cleanPhone?body=${Uri.encodeComponent(message)}');
-    final opened = await canLaunchUrl(uri) && await launchUrl(uri, mode: LaunchMode.externalApplication);
-    // فتح التطبيق ليس تأكيدًا للإرسال — يبقى pending في كل الأحوال.
-    return false && opened; // يبقى دائمًا false عمدًا؛ راجع تعليق الفئة أعلاه.
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+    // فتح التطبيق ليس تأكيدًا للإرسال — يبقى pending في كل الأحوال، بصرف
+    // النظر عن نجاح فتح التطبيق الخارجي. راجع تعليق الفئة أعلاه.
+    return false;
   }
 }
 

@@ -56,7 +56,7 @@ void main() {
   group('الصلاحيات', () {
     test('المدير (admin) يملك كل الصلاحيات على كل الوحدات', () async {
       await Session.instance.login('admin', 'admin123');
-      for (final action in Action.values) {
+      for (final action in PermAction.values) {
         final ok = await Permissions.can('loads', action);
         expect(ok, isTrue, reason: 'admin يجب أن يملك صلاحية ${action.name} على loads');
       }
@@ -64,7 +64,7 @@ void main() {
 
     test('طلب صلاحية بدون تسجيل دخول يُرفض', () async {
       Session.instance.logout();
-      expect(Permissions.require('loads', Action.view), throwsA(isA<PermissionDeniedException>()));
+      expect(Permissions.require('loads', PermAction.view), throwsA(isA<PermissionDeniedException>()));
     });
   });
 }

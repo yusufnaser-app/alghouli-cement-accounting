@@ -25,7 +25,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('تسجيل وترحيل الحمولة')),
       floatingActionButton: FutureBuilder<bool>(
-        future: Permissions.can('loads', Action.add),
+        future: Permissions.can('loads', PermAction.add),
         builder: (c, s) => (s.data ?? false)
             ? FloatingActionButton.extended(
                 icon: const Icon(Icons.add),
@@ -316,7 +316,7 @@ class LoadDetailScreen extends StatelessWidget {
               const SizedBox(height: 20),
               if (status == 'posted')
                 FutureBuilder<bool>(
-                  future: Permissions.can('loads', Action.reverse),
+                  future: Permissions.can('loads', PermAction.reverse),
                   builder: (c, s) => (s.data ?? false)
                       ? OutlinedButton.icon(
                           icon: const Icon(Icons.undo, color: Colors.red),
