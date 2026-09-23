@@ -83,8 +83,8 @@ void main() {
     final loadId = await LoadOperationService.registerDraft(input, createdBy: Session.instance.user!.id);
     await LoadOperationService.postLoad(loadId, postedBy: Session.instance.user!.id);
 
-    expect(
-      () => LoadOperationService.postLoad(loadId, postedBy: Session.instance.user!.id),
+    await expectLater(
+      LoadOperationService.postLoad(loadId, postedBy: Session.instance.user!.id),
       throwsA(isA<AlreadyPostedException>()),
     );
   });
@@ -114,8 +114,8 @@ void main() {
     expect((product['stock_bags'] as num).toDouble(), 0, reason: 'يجب أن يعود المخزون كما كان قبل الحمولة بعد العكس');
 
     // لا يمكن عكسها مرة أخرى ولا ترحيلها مجددًا
-    expect(
-      () => LoadOperationService.postLoad(loadId, postedBy: Session.instance.user!.id),
+    await expectLater(
+      LoadOperationService.postLoad(loadId, postedBy: Session.instance.user!.id),
       throwsA(isA<NotPostedException>()),
     );
   });
@@ -164,8 +164,8 @@ void main() {
     final loadId = await LoadOperationService.registerDraft(input, createdBy: Session.instance.user!.id);
 
     await Session.instance.login('viewer', 'viewer123');
-    expect(
-      () => LoadOperationService.postLoad(loadId, postedBy: Session.instance.user!.id),
+    await expectLater(
+      LoadOperationService.postLoad(loadId, postedBy: Session.instance.user!.id),
       throwsA(isA<PermissionDeniedException>()),
     );
   });
