@@ -8,10 +8,6 @@
 // ============================================================================
 
 import 'package:sqflite/sqflite.dart';
-<<<<<<< HEAD
-import '../core/db.dart';
-=======
->>>>>>> 6bcf499 (إصلاح أخطاء flutter analyze: تعارض Action وArabicFontLoader وconst)
 
 class SubAccountService {
   static const _parentByPartyType = {
