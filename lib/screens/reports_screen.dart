@@ -68,6 +68,7 @@ class ReportsScreen extends StatelessWidget {
 
   Future<void> _dailyLoads(BuildContext context) async {
     final rows = await Reports.dailyLoads(DateTime.now());
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('تقرير الحمولة اليومية', DateTime.now().toIso8601String().substring(0, 10));
@@ -95,6 +96,7 @@ class ReportsScreen extends StatelessWidget {
   Future<void> _monthlyLoads(BuildContext context) async {
     final now = DateTime.now();
     final rows = await Reports.monthlyLoads(now.year, now.month);
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('تقرير الحمولة الشهرية', '${now.year}-${now.month}');
@@ -123,6 +125,7 @@ class ReportsScreen extends StatelessWidget {
 
   Future<void> _stockReport(BuildContext context) async {
     final products = await Reports.stock();
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('تقرير المخزون', DateTime.now().toIso8601String().substring(0, 10));
@@ -133,6 +136,7 @@ class ReportsScreen extends StatelessWidget {
 
   Future<void> _trialBalance(BuildContext context) async {
     final rows = await AccountingEngine.trialBalance();
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('ميزان المراجعة', DateTime.now().toIso8601String().substring(0, 10));
@@ -157,6 +161,7 @@ class ReportsScreen extends StatelessWidget {
 
   Future<void> _profitLoss(BuildContext context) async {
     final pnl = await Reports.profitAndLoss();
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('الأرباح والخسائر', DateTime.now().toIso8601String().substring(0, 10));
@@ -182,6 +187,7 @@ class ReportsScreen extends StatelessWidget {
     );
     if (chosen == null || chosen['account_id'] == null) return;
     final lines = await AccountingEngine.statement(chosen['account_id'] as int);
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('كشف حساب: ${chosen['name']}', DateTime.now().toIso8601String().substring(0, 10));
@@ -203,6 +209,7 @@ class ReportsScreen extends StatelessWidget {
     );
     if (chosen == null || chosen['account_id'] == null) return;
     final lines = await AccountingEngine.statement(chosen['account_id'] as int);
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('كشف حساب سائق: ${chosen['name']}', DateTime.now().toIso8601String().substring(0, 10));
@@ -224,6 +231,7 @@ class ReportsScreen extends StatelessWidget {
     );
     if (chosen == null || chosen['account_id'] == null) return;
     final lines = await AccountingEngine.statement(chosen['account_id'] as int);
+    if (!context.mounted) return;
     await _exportAndPrint(context, () async {
       final font = await ArabicFontLoader.load();
       final header = await _header('كشف حساب قاطرة: ${chosen['plate']}', DateTime.now().toIso8601String().substring(0, 10));

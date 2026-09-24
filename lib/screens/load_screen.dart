@@ -66,7 +66,7 @@ class _LoadListScreenState extends State<LoadListScreen> {
                   title: Text('${r['operation_no']} — ${r['factory_name']}'),
                   subtitle: Text(
                       'السائق: ${r['driver_name']} | القاطرة: ${r['truck_plate']} | أكياس: ${money.format(r['bags'] as num)}'),
-                  trailing: Chip(label: Text(statusLabel), backgroundColor: statusColor.withOpacity(0.15)),
+                  trailing: Chip(label: Text(statusLabel), backgroundColor: statusColor.withValues(alpha: 0.15)),
                   onTap: () => Navigator.push(
                       context, MaterialPageRoute(builder: (_) => LoadDetailScreen(loadId: r['id'] as int))),
                 ),
@@ -147,6 +147,7 @@ class _LoadFormScreenState extends State<LoadFormScreen> {
             content: Text(postImmediately ? 'تم تسجيل وترحيل الحمولة بنجاح' : 'تم حفظ الحمولة كمسودة')));
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('خطأ: $e')));
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -185,7 +186,7 @@ class _LoadFormScreenState extends State<LoadFormScreen> {
           ]),
           const SizedBox(height: 10),
           DropdownButtonFormField<TransportBeneficiary>(
-            value: beneficiary,
+            initialValue: beneficiary,
             decoration: const InputDecoration(labelText: 'جهة استحقاق النقل', border: OutlineInputBorder()),
             items: const [
               DropdownMenuItem(value: TransportBeneficiary.driver, child: Text('السائق')),

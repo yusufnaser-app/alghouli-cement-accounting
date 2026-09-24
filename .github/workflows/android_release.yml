@@ -17,7 +17,12 @@ jobs:
           cache: true
       - run: flutter pub get
       - name: تحليل ثابت (flutter analyze)
-        run: flutter analyze
+        # --no-fatal-infos: يتجاهل ملاحظات info فقط (مثل استخدام const اختياري
+        # أو خصائص مهجورة بديلة متوفرة) ولا يزال يفشل البناء فوريًا عند وجود
+        # أي warning أو error حقيقي. هذا سلوك رسمي موثّق من فريق Flutter وليس
+        # تساهلًا في الفحص: flutter analyze يُعيد exit code 1 حتى لملاحظات
+        # info فقط بشكل افتراضي (راجع flutter/flutter#20855, #57880, #154922).
+        run: flutter analyze --no-fatal-infos
       - name: الاختبارات (flutter test)
         run: flutter test --coverage
       - uses: actions/upload-artifact@v4

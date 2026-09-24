@@ -96,7 +96,7 @@ class PdfTemplates {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            pw.Text(h.companyName, style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+            pw.Text(h.companyName, style: const pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
             if (h.companyAddress.isNotEmpty) pw.Text(h.companyAddress, style: const pw.TextStyle(fontSize: 9)),
             if (h.companyPhone.isNotEmpty) pw.Text('هاتف: ${h.companyPhone}', style: const pw.TextStyle(fontSize: 9)),
           ]),
@@ -107,7 +107,7 @@ class PdfTemplates {
       pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
-          pw.Text(h.docTitle, style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+          pw.Text(h.docTitle, style: const pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
           pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.end, children: [
             pw.Text('رقم المستند: ${h.docNumber}', style: const pw.TextStyle(fontSize: 10)),
             pw.Text('التاريخ: ${_dateFmt.format(h.date)}', style: const pw.TextStyle(fontSize: 10)),
@@ -153,7 +153,7 @@ class PdfTemplates {
                   child: pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      pw.Text(e.key, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+                      pw.Text(e.key, style: const pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
                       pw.Text(e.value, style: const pw.TextStyle(fontSize: 10)),
                     ],
                   ),
@@ -174,11 +174,11 @@ class PdfTemplates {
         ]),
         pw.Column(children: [
           pw.SizedBox(height: 50, width: 140),
-          pw.Text('توقيع المستلم', style: pw.TextStyle(fontSize: 9)),
+          pw.Text('توقيع المستلم', style: const pw.TextStyle(fontSize: 9)),
         ]),
         pw.Column(children: [
           pw.SizedBox(height: 50, width: 140),
-          pw.Text('توقيع المحاسب', style: pw.TextStyle(fontSize: 9)),
+          pw.Text('توقيع المحاسب', style: const pw.TextStyle(fontSize: 9)),
         ]),
       ],
     );
@@ -189,7 +189,7 @@ class PdfTemplates {
     return pw.TableHelper.fromTextArray(
       headers: headers,
       data: rows,
-      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
+      headerStyle: const pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
       cellStyle: const pw.TextStyle(fontSize: 9),
       cellAlignment: pw.Alignment.centerRight,
       headerAlignment: pw.Alignment.centerRight,

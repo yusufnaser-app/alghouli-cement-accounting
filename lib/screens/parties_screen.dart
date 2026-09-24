@@ -133,7 +133,7 @@ class _DriversScreenState extends State<DriversScreen> {
             TextField(controller: name, decoration: const InputDecoration(labelText: 'الاسم *')),
             TextField(controller: phone, decoration: const InputDecoration(labelText: 'الهاتف (لإشعارات واتساب)')),
             DropdownButtonFormField<String>(
-              value: kind,
+              initialValue: kind,
               decoration: const InputDecoration(labelText: 'نوع السائق'),
               items: const [
                 DropdownMenuItem(value: 'institution', child: Text('تابع للمؤسسة')),
@@ -214,7 +214,7 @@ class _TrucksScreenState extends State<TrucksScreen> {
           content: Column(mainAxisSize: MainAxisSize.min, children: [
             TextField(controller: plate, decoration: const InputDecoration(labelText: 'رقم اللوحة *')),
             DropdownButtonFormField<String>(
-              value: ownerKind,
+              initialValue: ownerKind,
               decoration: const InputDecoration(labelText: 'ملكية القاطرة'),
               items: const [
                 DropdownMenuItem(value: 'institution', child: Text('المؤسسة')),

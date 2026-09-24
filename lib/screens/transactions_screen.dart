@@ -66,6 +66,7 @@ class _SalesScreenState extends State<SalesScreen> {
     final price = TextEditingController();
     final paid = TextEditingController(text: '0');
 
+    if (!mounted) return;
     final ok = await showDialog<bool>(
       context: context,
       builder: (c) => StatefulBuilder(
@@ -74,13 +75,13 @@ class _SalesScreenState extends State<SalesScreen> {
           content: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               DropdownButtonFormField<int>(
-                value: customerId,
+                initialValue: customerId,
                 decoration: const InputDecoration(labelText: 'العميل'),
                 items: customers.map((c) => DropdownMenuItem(value: c['id'] as int, child: Text(c['name'].toString()))).toList(),
                 onChanged: (v) => setD(() => customerId = v!),
               ),
               DropdownButtonFormField<int>(
-                value: productId,
+                initialValue: productId,
                 decoration: const InputDecoration(labelText: 'المنتج'),
                 items: products.map((p) => DropdownMenuItem(value: p['id'] as int, child: Text(p['name'].toString()))).toList(),
                 onChanged: (v) => setD(() => productId = v!),
@@ -89,7 +90,7 @@ class _SalesScreenState extends State<SalesScreen> {
               TextField(controller: price, decoration: const InputDecoration(labelText: 'سعر الكيس'), keyboardType: TextInputType.number),
               TextField(controller: paid, decoration: const InputDecoration(labelText: 'المدفوع الآن'), keyboardType: TextInputType.number),
               DropdownButtonFormField<int>(
-                value: moneyAccountId,
+                initialValue: moneyAccountId,
                 decoration: const InputDecoration(labelText: 'حساب استلام الدفعة'),
                 items: moneyAccounts.map((m) => DropdownMenuItem(value: m['id'] as int, child: Text(m['name'].toString()))).toList(),
                 onChanged: (v) => setD(() => moneyAccountId = v!),
@@ -234,6 +235,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     final category = TextEditingController();
     final amount = TextEditingController();
     int moneyAccountId = moneyAccounts.first['id'] as int;
+    if (!mounted) return;
     final ok = await showDialog<bool>(
       context: context,
       builder: (c) => StatefulBuilder(
@@ -243,7 +245,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             TextField(controller: category, decoration: const InputDecoration(labelText: 'التصنيف')),
             TextField(controller: amount, decoration: const InputDecoration(labelText: 'المبلغ'), keyboardType: TextInputType.number),
             DropdownButtonFormField<int>(
-              value: moneyAccountId,
+              initialValue: moneyAccountId,
               decoration: const InputDecoration(labelText: 'الدفع من حساب'),
               items: moneyAccounts.map((m) => DropdownMenuItem(value: m['id'] as int, child: Text(m['name'].toString()))).toList(),
               onChanged: (v) => setD(() => moneyAccountId = v!),
@@ -321,6 +323,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
     int moneyAccountId = moneyAccounts.first['id'] as int;
     final amount = TextEditingController();
     final desc = TextEditingController();
+    if (!mounted) return;
     final ok = await showDialog<bool>(
       context: context,
       builder: (c) => StatefulBuilder(
@@ -328,7 +331,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
           title: const Text('سند مالي'),
           content: Column(mainAxisSize: MainAxisSize.min, children: [
             DropdownButtonFormField<String>(
-              value: kind,
+              initialValue: kind,
               decoration: const InputDecoration(labelText: 'النوع'),
               items: const [
                 DropdownMenuItem(value: 'receipt', child: Text('سند قبض')),
@@ -337,7 +340,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
               onChanged: (v) => setD(() => kind = v!),
             ),
             DropdownButtonFormField<int>(
-              value: moneyAccountId,
+              initialValue: moneyAccountId,
               decoration: const InputDecoration(labelText: 'الحساب المالي'),
               items: moneyAccounts.map((m) => DropdownMenuItem(value: m['id'] as int, child: Text(m['name'].toString()))).toList(),
               onChanged: (v) => setD(() => moneyAccountId = v!),

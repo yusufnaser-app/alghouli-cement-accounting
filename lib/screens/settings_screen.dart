@@ -67,6 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('تعذّرت الاستعادة: ${check.message}')));
       return;
     }
+    if (!mounted) return;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (c) => AlertDialog(
