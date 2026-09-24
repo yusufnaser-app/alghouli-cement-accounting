@@ -1,149 +1,77 @@
 name: Android Build & Test
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-  workflow_dispatch:
+push:
+branches: [ main ]
+pull_request:
+workflow_dispatch:
 
 jobs:
-  analyze_and_test:
-    runs-on: ubuntu-latest
+analyze_and_test:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v4
+- uses: subosito/flutter-action@v2
+with:
+channel: stable
+cache: true
+- run: flutter pub get
+- name: تحليل ثابت (flutter analyze)
+# --no-fatal-infos: يتجاهل ملاحظات info فقط (مثل استخدام const اختياري
+# أو خصائص مهجورة بديلة متوفرة) ولا يزال يفشل البناء فوريًا عند وجود
+# أي warning أو error حقيقي. هذا سلوك رسمي موثّق من فريق Flutter وليس
+# تساهلًا في الفحص: flutter analyze يُعيد exit code 1 حتى لملاحظات
+# info فقط بشكل افتراضي (راجع flutter/flutter#20855, #57880, #154922).
+run: flutter analyze --no-fatal-infos
+- name: الاختبارات (flutter test)
+run: flutter test --coverage
+- uses: actions/upload-artifact@v4
+with:
+name: coverage-report
+path: coverage/
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+build_debug_apk:
+needs: analyze_and_test
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v4
+- uses: subosito/flutter-action@v2
+with:
+channel: stable
+cache: true
+- run: flutter pub get
+- run: flutter build apk --debug
+- uses: actions/upload-artifact@v4
+with:
+name: debug-apk
+path: build/app/outputs/flutter-apk/app-debug.apk
 
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
+يعمل فقط إن أضفت أسرار التوقيع في إعدادات المستودع (Settings > Secrets):
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
+ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
 
-      - name: Install Android SDK 36
-        run: |
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-
-      - name: Verify Android SDK
-        run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          sdkmanager --list_installed | grep -E "platforms;android-36|build-tools;36.0.0|platform-tools" || true
-
-      - name: Flutter Doctor
-        run: flutter doctor -v
-
-      - name: Flutter Pub Get
-        run: flutter pub get
-
-      - name: Flutter Analyze
-        run: flutter analyze --no-fatal-infos
-
-      - name: Flutter Test
-        run: flutter test --coverage
-
-      - name: Upload Coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-
-
-  build_debug_apk:
-    needs: analyze_and_test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install Android SDK 36
-        run: |
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-
-      - name: Flutter Pub Get
-        run: flutter pub get
-
-      - name: Flutter Clean
-        run: flutter clean
-
-      - name: Build Debug APK
-        run: flutter build apk --debug
-
-      - name: Upload Debug APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
-
-
-  build_release_aab:
-    needs: analyze_and_test
-    if: ${{ vars.ENABLE_RELEASE_SIGNING == 'true' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install Android SDK 36
-        run: |
-          yes | sdkmanager --licenses > /dev/null || true
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-
-      - name: فك تشفير الـ keystore من السر
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/release.jks
-
-          cat > android/key.properties << PROPS
-          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
-          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-          storeFile=release.jks
-          PROPS
-
-      - name: Flutter Pub Get
-        run: flutter pub get
-
-      - name: Flutter Clean
-        run: flutter clean
-
-      - name: Build Release AAB
-        run: flutter build appbundle --release
-
-      - name: Upload Release AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-aab
-          path: build/app/outputs/bundle/release/app-release.aab
+build_release_aab:
+needs: analyze_and_test
+if: ${{ vars.ENABLE_RELEASE_SIGNING == 'true' }}
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v4
+- uses: subosito/flutter-action@v2
+with:
+channel: stable
+cache: true
+- name: فك تشفير الـ keystore من السر
+run: |
+echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/release.jks
+cat > android/key.properties << PROPS
+storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+storeFile=release.jks
+PROPS
+- run: flutter pub get
+- run: flutter build appbundle --release
+- uses: actions/upload-artifact@v4
+with:
+name: release-aab
+path: build/app/outputs/bundle/release/app-release.aab
