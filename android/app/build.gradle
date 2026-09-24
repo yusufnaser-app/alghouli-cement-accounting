@@ -1,42 +1,49 @@
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
-    // يجب تطبيق إضافة Flutter Gradle بعد إضافتي Android وKotlin مباشرة —
-    // هذا هو الجزء الذي كان مفقودًا ويسبب خطأ "unsupported Gradle project".
+    // يجب تطبيق إضافة Flutter Gradle بعد إضافتي Android وKotlin مباشرة
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-// ملاحظة: كود Groovy العادي (مثل تحميل key.properties) يجب أن يأتي بعد
-// plugins {} مباشرة، لأن Gradle يفرض أن plugins {} يكون أول عنصر في الملف
-// (عدا buildscript {} و pluginManagement {})، ولا يسمح بأي جملة قبله.
+// تحميل إعدادات التوقيع بعد plugins {}
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 def hasReleaseSigning = keystorePropertiesFile.exists()
+
 if (hasReleaseSigning) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
     namespace "com.alghouli.cement"
-    compileSdk 35
+
+    // تم رفعه من 35 إلى 36 لأن Plugins و AndroidX الحالية
+    // تتطلب compileSdk 36 أو أعلى.
+    compileSdk 36
+
     ndkVersion flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
 
     defaultConfig {
-        // applicationId فريد للمؤسسة — لا تُغيّره بعد أول نشر على Play Store
+        // لا تغيّر applicationId بعد النشر على Google Play
         applicationId "com.alghouli.cement"
+
         minSdk 23
+
+        // يمكن إبقاؤه 35؛ المطلوب لحل الخطأ الحالي هو compileSdk 36
         targetSdk 35
-        // يجب أن يطابق pubspec.yaml (version: X.Y.Z+build) — راجع BUILD_GUIDE_AR.md
+
         versionCode 3
         versionName "3.0.0"
+
         multiDexEnabled true
     }
 
@@ -45,7 +52,8 @@ android {
             release {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
-                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storeFile keystoreProperties['storeFile'] ?
+                        file(keystoreProperties['storeFile']) : null
                 storePassword keystoreProperties['storePassword']
             }
         }
@@ -53,15 +61,19 @@ android {
 
     buildTypes {
         release {
-            // بدون key.properties فعلي، يُستخدم توقيع debug مؤقتًا حتى لا يفشل
-            // البناء التجريبي — هذا APK غير صالح للنشر على Play Store إطلاقًا.
-            // لتوليد AAB قابل للنشر فعليًا، اتبع BUILD_GUIDE_AR.md لإنشاء
-            // keystore حقيقي وملء android/key.properties.
-            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+            // إذا لم يوجد key.properties يستخدم debug signing
+            // للتجارب فقط، وليس للنشر على Play Store.
+            signingConfig hasReleaseSigning ?
+                    signingConfigs.release : signingConfigs.debug
+
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'
+            ), 'proguard-rules.pro'
         }
+
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
@@ -75,6 +87,6 @@ flutter {
 
 dependencies {
     constraints {
-        // مكان مخصص لأي قيود إصدارات إضافية لاحقًا
+        // مكان مخصص لأي قيود إصدارات مستقبلية
     }
 }
