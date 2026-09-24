@@ -1,9 +1,9 @@
 plugins {
-id "com.android.application"
-id "org.jetbrains.kotlin.android"
-// يجب تطبيق إضافة Flutter Gradle بعد إضافتي Android وKotlin مباشرة —
-// هذا هو الجزء الذي كان مفقودًا ويسبب خطأ "unsupported Gradle project".
-id "dev.flutter.flutter-gradle-plugin"
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+    // يجب تطبيق إضافة Flutter Gradle بعد إضافتي Android وKotlin مباشرة —
+    // هذا هو الجزء الذي كان مفقودًا ويسبب خطأ "unsupported Gradle project".
+    id "dev.flutter.flutter-gradle-plugin"
 }
 
 // ملاحظة: كود Groovy العادي (مثل تحميل key.properties) يجب أن يأتي بعد
@@ -13,69 +13,68 @@ def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 def hasReleaseSigning = keystorePropertiesFile.exists()
 if (hasReleaseSigning) {
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
-namespace "com.alghouli.cement"
-compileSdk 35
-ndkVersion flutter.ndkVersion
+    namespace "com.alghouli.cement"
+    compileSdk 35
+    ndkVersion flutter.ndkVersion
 
-compileOptions {  
-    sourceCompatibility JavaVersion.VERSION_17  
-    targetCompatibility JavaVersion.VERSION_17  
-}  
-kotlinOptions {  
-    jvmTarget = "17"  
-}  
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
-defaultConfig {  
-    // applicationId فريد للمؤسسة — لا تُغيّره بعد أول نشر على Play Store  
-    applicationId "com.alghouli.cement"  
-    minSdk 23  
-    targetSdk 35  
-    // يجب أن يطابق pubspec.yaml (version: X.Y.Z+build) — راجع BUILD_GUIDE_AR.md  
-    versionCode 3  
-    versionName "3.0.0"  
-    multiDexEnabled true  
-}  
+    defaultConfig {
+        // applicationId فريد للمؤسسة — لا تُغيّره بعد أول نشر على Play Store
+        applicationId "com.alghouli.cement"
+        minSdk 23
+        targetSdk 35
+        // يجب أن يطابق pubspec.yaml (version: X.Y.Z+build) — راجع BUILD_GUIDE_AR.md
+        versionCode 3
+        versionName "3.0.0"
+        multiDexEnabled true
+    }
 
-signingConfigs {  
-    if (hasReleaseSigning) {  
-        release {  
-            keyAlias keystoreProperties['keyAlias']  
-            keyPassword keystoreProperties['keyPassword']  
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null  
-            storePassword keystoreProperties['storePassword']  
-        }  
-    }  
-}  
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
 
-buildTypes {  
-    release {  
-        // بدون key.properties فعلي، يُستخدم توقيع debug مؤقتًا حتى لا يفشل  
-        // البناء التجريبي — هذا APK غير صالح للنشر على Play Store إطلاقًا.  
-        // لتوليد AAB قابل للنشر فعليًا، اتبع BUILD_GUIDE_AR.md لإنشاء  
-        // keystore حقيقي وملء android/key.properties.  
-        signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug  
-        minifyEnabled true  
-        shrinkResources true  
-        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'  
-    }  
-    debug {  
-        applicationIdSuffix ".debug"  
-        versionNameSuffix "-debug"  
-    }  
-}
-
+    buildTypes {
+        release {
+            // بدون key.properties فعلي، يُستخدم توقيع debug مؤقتًا حتى لا يفشل
+            // البناء التجريبي — هذا APK غير صالح للنشر على Play Store إطلاقًا.
+            // لتوليد AAB قابل للنشر فعليًا، اتبع BUILD_GUIDE_AR.md لإنشاء
+            // keystore حقيقي وملء android/key.properties.
+            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+    }
 }
 
 flutter {
-source "../.."
+    source "../.."
 }
 
 dependencies {
-constraints {
-// مكان مخصص لأي قيود إصدارات إضافية لاحقًا
-}
+    constraints {
+        // مكان مخصص لأي قيود إصدارات إضافية لاحقًا
+    }
 }

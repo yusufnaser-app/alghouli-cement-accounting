@@ -1,77 +1,75 @@
 name: Android Build & Test
 
 on:
-push:
-branches: [ main ]
-pull_request:
-workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
 
 jobs:
-analyze_and_test:
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- uses: subosito/flutter-action@v2
-with:
-channel: stable
-cache: true
-- run: flutter pub get
-- name: تحليل ثابت (flutter analyze)
-# --no-fatal-infos: يتجاهل ملاحظات info فقط (مثل استخدام const اختياري
-# أو خصائص مهجورة بديلة متوفرة) ولا يزال يفشل البناء فوريًا عند وجود
-# أي warning أو error حقيقي. هذا سلوك رسمي موثّق من فريق Flutter وليس
-# تساهلًا في الفحص: flutter analyze يُعيد exit code 1 حتى لملاحظات
-# info فقط بشكل افتراضي (راجع flutter/flutter#20855, #57880, #154922).
-run: flutter analyze --no-fatal-infos
-- name: الاختبارات (flutter test)
-run: flutter test --coverage
-- uses: actions/upload-artifact@v4
-with:
-name: coverage-report
-path: coverage/
+  analyze_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: تحليل ثابت (flutter analyze)
+        # --no-fatal-infos: يتجاهل ملاحظات info فقط (مثل استخدام const اختياري
+        # أو خصائص مهجورة بديلة متوفرة) ولا يزال يفشل البناء فوريًا عند وجود
+        # أي warning أو error حقيقي. هذا سلوك رسمي موثّق من فريق Flutter وليس
+        # تساهلًا في الفحص: flutter analyze يُعيد exit code 1 حتى لملاحظات
+        # info فقط بشكل افتراضي (راجع flutter/flutter#20855, #57880, #154922).
+        run: flutter analyze --no-fatal-infos
+      - name: الاختبارات (flutter test)
+        run: flutter test --coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
 
-build_debug_apk:
-needs: analyze_and_test
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- uses: subosito/flutter-action@v2
-with:
-channel: stable
-cache: true
-- run: flutter pub get
-- run: flutter build apk --debug
-- uses: actions/upload-artifact@v4
-with:
-name: debug-apk
-path: build/app/outputs/flutter-apk/app-debug.apk
+  build_debug_apk:
+    needs: analyze_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
 
-يعمل فقط إن أضفت أسرار التوقيع في إعدادات المستودع (Settings > Secrets):
-
-ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
-
-build_release_aab:
-needs: analyze_and_test
-if: ${{ vars.ENABLE_RELEASE_SIGNING == 'true' }}
-runs-on: ubuntu-latest
-steps:
-- uses: actions/checkout@v4
-- uses: subosito/flutter-action@v2
-with:
-channel: stable
-cache: true
-- name: فك تشفير الـ keystore من السر
-run: |
-echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/release.jks
-cat > android/key.properties << PROPS
-storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
-keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-storeFile=release.jks
-PROPS
-- run: flutter pub get
-- run: flutter build appbundle --release
-- uses: actions/upload-artifact@v4
-with:
-name: release-aab
-path: build/app/outputs/bundle/release/app-release.aab
+  # يعمل فقط إن أضفت أسرار التوقيع في إعدادات المستودع (Settings > Secrets):
+  # ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+  build_release_aab:
+    needs: analyze_and_test
+    if: ${{ vars.ENABLE_RELEASE_SIGNING == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: فك تشفير الـ keystore من السر
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/release.jks
+          cat > android/key.properties << PROPS
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=release.jks
+          PROPS
+      - run: flutter pub get
+      - run: flutter build appbundle --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
