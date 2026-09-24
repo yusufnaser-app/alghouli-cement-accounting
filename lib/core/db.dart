@@ -44,7 +44,20 @@ class AppDb {
   /// نقطة دخول مخصّصة للاختبارات: تنشئ قاعدة بيانات في الذاكرة عبر
   /// databaseFactory المُمرَّر (عادة sqflite_common_ffi في بيئة سطح المكتب/CI
   /// حيث لا يتوفر مزوّد المنصة الحقيقي). راجع test/test_helpers.dart.
+  ///
+  /// مهم: يُغلق أي اتصال سابق صراحة قبل فتح اتصال جديد. بدون هذا، يعيد
+  /// sqflite/sqflite_common_ffi نفس الاتصال المفتوح مسبقًا لنفس المسار
+  /// (':memory:' هنا) بدل إنشاء قاعدة بيانات فارغة حقيقية، ما يجعل بيانات
+  /// اختبار سابق "تتسرّب" إلى الاختبار التالي بصمت.
   Future<void> initWithFactory(DatabaseFactory factory, {String path = inMemoryDatabasePath}) async {
+    if (_db != null) {
+      try {
+        await _db!.close();
+      } catch (_) {
+        // تجاهل أي خطأ إغلاق (قد يكون مُغلقًا مسبقًا) — الهدف ضمان عدم بقاء اتصال قديم فقط
+      }
+      _db = null;
+    }
     _db = await factory.openDatabase(
       path,
       options: OpenDatabaseOptions(
