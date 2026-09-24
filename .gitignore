@@ -1,0 +1,29 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+*.iml
+
+# Android
+android/local.properties
+android/key.properties
+android/**/*.keystore
+android/**/*.jks
+android/.gradle/
+android/captures/
+android/app/release/
+**/android/**/GeneratedPluginRegistrant.java
+
+# iOS (not currently targeted, kept for completeness)
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+
+# Coverage / test output
+coverage/
+
+# Editors/OS
+.vscode/
+.idea/
+.DS_Store

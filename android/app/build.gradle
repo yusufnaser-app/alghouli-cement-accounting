@@ -8,6 +8,9 @@ if (hasReleaseSigning) {
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
+    // يجب تطبيق إضافة Flutter Gradle بعد إضافتي Android وKotlin مباشرة —
+    // هذا هو الجزء الذي كان مفقودًا ويسبب خطأ "unsupported Gradle project".
+    id "dev.flutter.flutter-gradle-plugin"
 }
 
 android {
