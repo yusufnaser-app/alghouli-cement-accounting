@@ -689,9 +689,17 @@ class AppDb {
     final m = jsonDecode(jsonStr) as Map<String, dynamic>;
     final tables = m['tables'] as Map<String, dynamic>;
     await db.transaction((tx) async {
-      for (final t in _allTables) {
+      // المرحلة 1: حذف كل الجداول بترتيب عكسي (الأبناء أولًا) لتفادي انتهاك
+      // قيود Foreign Key أثناء الحذف المؤقت — مثال: money_accounts تشير إلى
+      // accounts، فيجب حذف money_accounts قبل accounts وليس بعده.
+      for (final t in _allTables.reversed) {
         if (tables[t] == null) continue;
         await tx.delete(t);
+      }
+      // المرحلة 2: إعادة الإدراج بالترتيب الطبيعي (الآباء قبل الأبناء) بعد
+      // أن أصبحت كل الجداول فارغة، فلا تعارض بين مرحلتي الحذف والإدراج.
+      for (final t in _allTables) {
+        if (tables[t] == null) continue;
         for (final r in (tables[t] as List)) {
           await tx.insert(t, Map<String, Object?>.from(r as Map));
         }
