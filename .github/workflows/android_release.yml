@@ -20,18 +20,24 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK 36
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 36
-        run: |
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
+
+      - name: Install Android SDK 36
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Verify Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          sdkmanager --list_installed | grep -E "platforms;android-36|build-tools;36.0.0|platform-tools" || true
+
+      - name: Flutter Doctor
+        run: flutter doctor -v
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -63,18 +69,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK 36
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 36
-        run: |
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
+
+      - name: Install Android SDK 36
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Flutter Pub Get
         run: flutter pub get
@@ -107,18 +111,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK 36
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 36
-        run: |
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
+
+      - name: Install Android SDK 36
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: فك تشفير الـ keystore من السر
         run: |
