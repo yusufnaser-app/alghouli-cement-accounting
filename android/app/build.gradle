@@ -1,16 +1,19 @@
-def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('key.properties')
-def hasReleaseSigning = keystorePropertiesFile.exists()
-if (hasReleaseSigning) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
     // يجب تطبيق إضافة Flutter Gradle بعد إضافتي Android وKotlin مباشرة —
     // هذا هو الجزء الذي كان مفقودًا ويسبب خطأ "unsupported Gradle project".
     id "dev.flutter.flutter-gradle-plugin"
+}
+
+// ملاحظة: كود Groovy العادي (مثل تحميل key.properties) يجب أن يأتي بعد
+// plugins {} مباشرة، لأن Gradle يفرض أن plugins {} يكون أول عنصر في الملف
+// (عدا buildscript {} و pluginManagement {})، ولا يسمح بأي جملة قبله.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+def hasReleaseSigning = keystorePropertiesFile.exists()
+if (hasReleaseSigning) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
